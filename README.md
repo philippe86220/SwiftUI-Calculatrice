@@ -47,6 +47,8 @@ Le code et la structure de cette calculatrice ont été développés avec l’as
 
 Je ne revendique pas la paternité exclusive du code : mon objectif est d'en comprendre le fonctionnement et de le partager comme **référence d'apprentissage** pour d'autres débutants.
 
+---
+
 📚 Documentation complémentaire :
 - [Optionnels en Swift](./docs/Optionnels.md)
 
