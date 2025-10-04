@@ -24,7 +24,12 @@ Elle intègre les opérations de base, les pourcentages, plusieurs opérations u
 
 ## 📸 Aperçu
 
+### vue de la Calculatrice :
 ![Vue](Assets/capture1.png)
+
+### vue de la fenêtre de l'historique : 
+![Exemple 2](Assets/capture2.png)
+
 
 ---
 
