@@ -51,7 +51,7 @@ if let nomConstante = valeurOptionnelle {
 1. Swift vérifie si valeurOptionnelle contient une valeur.
 2. Si oui, la valeur est déballée et affectée à nomConstante.
 3. Le code dans les accolades est exécuté.
-4.   Si valeurOptionnelle est nil, le bloc if est ignoré.
+4. Si valeurOptionnelle est nil, le bloc if est ignoré.
     
 👉 Attention : la constante créée (nomConstante) n’est disponible que dans le bloc if.
 
@@ -81,6 +81,9 @@ Sortie :
 valeur déballée : bonjour
 pas de valeur disponible
 ```
+ℹ️ **Remarquez l’utilisation de = au lieu de == avec un if** :  
+ici, on ne compare pas deux valeurs, on effectue une affectation conditionnelle.  
+Si la valeur existe, elle est déballée et assignée à la constante temporaire.
 
 ## 🟨 2. guard let — déballage anticipé
 
@@ -92,7 +95,7 @@ guard let nomConstante = valeurOptionnelle else {
 ```
 🔸 Comment ça fonctionne :
 1. Swift vérifie si valeurOptionnelle contient une valeur.
-2. Si oui, la valeur est déballée et affectée à nomConstante.
+2. Si oui, la valeur est déballée et affectée à nomConstante.  
 → Elle est alors disponible dans tout le bloc englobant, pas seulement dans guard.
 3. Si valeurOptionnelle est nil, le bloc else s’exécute et on quitte la portée (souvent avec return).
 
@@ -113,6 +116,40 @@ func saluer(_ nom: String?) {
 saluer(monNom)     // Bonjour, Philippe !
 saluer(autreNom)   // Aucun nom fourni
 ```
+ℹ️ Bien que if let et guard let soient principalement utilisés pour déballer des optionnels,  
+ils peuvent aussi servir à réaliser des affectations conditionnelles plus générales.  
+A partir de Swift 5.7, if let et guard let ont été étendus pour permettre de vérifier des conditions simples,  
+pas uniquement de déballer des optionnels.
+
+```swift
+var x: Int? = 5
+
+// Optionnel classique
+if let valeur = x {
+    print(valeur)
+}
+
+// Depuis Swift 5.7 : toute expression booléenne peut être testée
+if let test = (2 + 2 == 4) ? "OK" : nil {
+    print(test)  // OK
+}
+```
+
+```swift
+func division(_ a: Int, _ b: Int) {
+    guard let resultat = (b != 0) ? Double(a) / Double(b) : nil else {
+        print("Division par zéro interdite")
+        return
+    }
+    print("Résultat : \(resultat)")
+}
+
+division(10, 2)  // Résultat : 5.0
+division(10, 0)  // Division par zéro interdite
+
+```
+
+
 ## 🪄 3. L’opérateur de coalescence nil : ??
 Cet opérateur permet :
 - d’utiliser la valeur de l’optionnel si elle existe,
@@ -145,12 +182,12 @@ func saluer(_ nom: String) {
 saluer(monNom!)   // Bonjour, Philippe !
 ```
 
-🚨 Si monNom est nil, cette opération provoque un crash.
+🚨 Si monNom est nil, cette opération provoque un crash.  
 À réserver uniquement aux cas où vous êtes absolument certain qu’il y a une valeur.
 
 
 ## 🧰 5. Optionnels implicitement déballés (String!)
-```swif
+```swift
 var monNom: String! = "Philippe"
 
 func saluer(_ nom: String) {
@@ -162,10 +199,10 @@ saluer(monNom)   // Bonjour, Philippe !
 monNom = nil
 // saluer(monNom) // ⚠️ Crash si nil !
 ```
-👉 Un optionnel implicitement déballé se comporte comme une variable normale,
+👉 Un optionnel implicitement déballé se comporte comme une variable normale,  
 mais provoque un crash s’il devient nil. À utiliser avec prudence.
 
----
+
 
 📌 En résumé
 
@@ -176,4 +213,30 @@ mais provoque un crash s’il devient nil. À utiliser avec prudence.
 | `??`                | ✅ sûre     | Valeurs par défaut                          |
 | `!` (forced unwrap) | ❌ risquée  | Cas très particuliers                       |
 | `String!`           | ⚠️ moyenne | Variables toujours censées avoir une valeur |
+
+---
+
+## 🔗 Le chaînage optionnel `?.`
+
+Le chaînage optionnel permet d'accéder à une valeur imbriquée dans plusieurs niveaux d'optionnels, tout en s'arrêtant automatiquement au premier `nil` rencontré.
+
+```swift
+struct Naissance {
+    var jour: Int
+    var annee: Int
+}
+
+struct Personne {
+    var nom: String
+    var naissance: Naissance?
+}
+
+var p1: Personne? = Personne(nom: "Philippe", naissance: Naissance(jour: 4, annee: 1964))
+var p2: Personne? = Personne(nom: "Inconnue", naissance: nil)
+var p3: Personne? = nil
+
+print(p1?.naissance?.annee) // Optional(1964)
+print(p2?.naissance?.annee) // nil
+print(p3?.naissance?.annee) // nil
+
 
