@@ -39,7 +39,7 @@ Deux méthodes principales :
 - if let
 - guard let
 
-🟦 1. if let — déballage local
+## 🟦 1. if let — déballage local
 
 ```swift
 if let nomConstante = valeurOptionnelle {
@@ -82,7 +82,7 @@ valeur déballée : bonjour
 pas de valeur disponible
 ```
 
-🟨 2. guard let — déballage anticipé
+## 🟨 2. guard let — déballage anticipé
 
 ```swift
 guard let nomConstante = valeurOptionnelle else {
@@ -113,7 +113,7 @@ func saluer(_ nom: String?) {
 saluer(monNom)     // Bonjour, Philippe !
 saluer(autreNom)   // Aucun nom fourni
 ```
-🪄 3. L’opérateur de coalescence nulle ??
+## 🪄 3. L’opérateur de coalescence nil : ??
 Cet opérateur permet :
 - d’utiliser la valeur de l’optionnel si elle existe,
 - ou une valeur par défaut si l’optionnel est nil.
@@ -134,7 +134,7 @@ saluer(monNom ?? "inconnu")    // Bonjour, Philippe !
 saluer(autreNom ?? "inconnu")  // Bonjour, inconnu !
 ```
 
-⚠️ 4. Le déballage forcé ! (à éviter)
+## ⚠️ 4. Le déballage forcé ! (à éviter)
 ```swift
 let monNom: String? = "Philippe"
 
@@ -149,7 +149,7 @@ saluer(monNom!)   // Bonjour, Philippe !
 À réserver uniquement aux cas où vous êtes absolument certain qu’il y a une valeur.
 
 
-🧰 5. Optionnels implicitement déballés (String!)
+## 🧰 5. Optionnels implicitement déballés (String!)
 ```swif
 var monNom: String! = "Philippe"
 
@@ -164,6 +164,10 @@ monNom = nil
 ```
 👉 Un optionnel implicitement déballé se comporte comme une variable normale,
 mais provoque un crash s’il devient nil. À utiliser avec prudence.
+
+---
+
+📌 En résumé
 
 | Méthode             | Sécurité   | Utilisation typique                         |
 | ------------------- | ---------- | ------------------------------------------- |
