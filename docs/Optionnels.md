@@ -24,7 +24,7 @@ var entierOptionnel: Int? = 25  // type optionnel
 ```
 Un optionnel est en réalité un conteneur (wrapper) qui peut soit :
 - contenir une valeur du type indiqué,
-- soit contenir nil.
+- soit contenir `nil`.
 
 ```swift
 print(entierOptionnel)  // Optional(25)
@@ -36,8 +36,8 @@ print(entierNormal)     // 25
 On ne peut pas utiliser directement une valeur optionnelle.
 Il faut d’abord la “déballer” — c’est-à-dire sortir la valeur du conteneur.
 Deux méthodes principales :
-- if let
-- guard let
+### 1. if let
+### 2. guard let
 
 ## 🟦 1. if let — déballage local
 
@@ -97,7 +97,7 @@ guard let nomConstante = valeurOptionnelle else {
 1. Swift vérifie si valeurOptionnelle contient une valeur.
 2. Si oui, la valeur est déballée et affectée à nomConstante.  
 → Elle est alors disponible dans tout le bloc englobant, pas seulement dans guard.
-3. Si valeurOptionnelle est nil, le bloc else s’exécute et on quitte la portée (souvent avec return).
+3. Si valeurOptionnelle est `nil`, le bloc else s’exécute et on quitte la portée (souvent avec return).
 
    
 🧪 Exemple :
@@ -148,12 +148,12 @@ division(10, 2)  // Résultat : 5.0
 division(10, 0)  // Division par zéro interdite
 
 ```
-
+---
 
 ## 🪄 3. L’opérateur de coalescence nil : ??
 Cet opérateur permet :
 - d’utiliser la valeur de l’optionnel si elle existe,
-- ou une valeur par défaut si l’optionnel est nil.
+- ou une valeur par défaut si l’optionnel est `nil`.
 ```swift
 valeurOptionnelle ?? valeurParDefaut
 ```
@@ -171,7 +171,7 @@ saluer(monNom ?? "inconnu")    // Bonjour, Philippe !
 saluer(autreNom ?? "inconnu")  // Bonjour, inconnu !
 ```
 
-## ⚠️ 4. Le déballage forcé ! (à éviter)
+## ⚠️ 4. Le déballage forcé `!` (à éviter)
 ```swift
 let monNom: String? = "Philippe"
 
@@ -182,11 +182,11 @@ func saluer(_ nom: String) {
 saluer(monNom!)   // Bonjour, Philippe !
 ```
 
-🚨 Si monNom est nil, cette opération provoque un crash.  
+🚨 Si monNom est `nil`, cette opération provoque un crash.  
 À réserver uniquement aux cas où vous êtes absolument certain qu’il y a une valeur.
 
 
-## 🧰 5. Optionnels implicitement déballés (String!)
+## 🧰 5. Optionnels implicitement déballés: `!` aprés le nom du type (ex : String!)
 ```swift
 var monNom: String! = "Philippe"
 
@@ -200,7 +200,7 @@ monNom = nil
 // saluer(monNom) // ⚠️ Crash si nil !
 ```
 👉 Un optionnel implicitement déballé se comporte comme une variable normale,  
-mais provoque un crash s’il devient nil. À utiliser avec prudence.
+mais provoque un crash s’il devient `nil`. À utiliser avec prudence.
 
 
 
@@ -216,7 +216,7 @@ mais provoque un crash s’il devient nil. À utiliser avec prudence.
 
 ---
 
-## 🔗 Le chaînage optionnel `?.`
+## Le chaînage optionnel `?.`
 
 Le chaînage optionnel permet d'accéder à une valeur imbriquée dans plusieurs niveaux d'optionnels, tout en s'arrêtant automatiquement au premier `nil` rencontré.
 
