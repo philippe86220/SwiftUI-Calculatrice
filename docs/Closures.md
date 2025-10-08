@@ -274,3 +274,109 @@ Ici :
 | ⚡ Usage | Tri, actions différées, callbacks, SwiftUI, async |
 
 ---
+
+## 8. ARC et `[weak self]` dans les closures
+
+Les closures en Swift sont étroitement liées au **système ARC (Automatic Reference Counting)**.  
+Comprendre comment ARC fonctionne est essentiel pour éviter les **cycles de rétention mémoire**.
+
+---
+
+### 🧠 8.1 Rappel sur ARC
+
+Swift utilise un système de **comptage automatique de références** :
+- Chaque **instance de classe** a un **compteur de références**.
+- Lorsqu’on crée une **référence forte** vers un objet, ce compteur augmente.
+- Lorsqu’on supprime une référence forte, le compteur diminue.
+- Quand le compteur atteint **0**, l’objet est **libéré automatiquement** de la mémoire → son `deinit` est appelé.
+
+```swift
+class Exemple {
+    deinit {
+        print("♻️ Instance libérée")
+    }
+}
+
+func test() {
+    var obj: Exemple? = Exemple()
+    obj = nil // compteur = 0 → deinit appelé
+}
+
+test()
+```
+### 🔄 8.2 Le problème : cycle de rétention
+Un cycle de rétention se produit quand deux objets se retiennent mutuellement avec des références fortes, les empêchant d’être libérés.
+Les closures sont particulièrement sujettes à ce problème, car :
+Une instance peut contenir une closure comme propriété.
+Cette closure peut capturer self fortement.
+Résultat : la closure garde self en vie, et self garde la closure en vie ➡️ cycle.
+```swift
+class Calculateur {
+    var facteur = 3
+    var closure: ((Int) -> Int)?
+
+    func creerClosure() {
+        closure = { a in
+            // ❌ Capture forte de self
+            return a * self.facteur
+        }
+    }
+
+    deinit {
+        print("♻️ Calculateur libéré")
+    }
+}
+
+func test() {
+    let calc = Calculateur()
+    calc.creerClosure()
+    // À la fin, l'instance n'est jamais libérée ❌
+}
+
+test()
+```
+➡️ Ici, self est capturé fortement par la closure → la libération ne se produit pas.
+
+### 🧰 8.3 La solution : [weak self]
+Pour rompre le cycle, on capture self de manière faible :
+```swift
+class Calculateur {
+    var facteur = 3
+    var closure: ((Int) -> Int)?
+
+    func creerClosure() {
+        closure = { [weak self] a in
+            guard let self = self else { return 0 }
+            return a * self.facteur
+        }
+    }
+
+    deinit {
+        print("♻️ Calculateur libéré")
+    }
+}
+
+func test() {
+    let calc = Calculateur()
+    calc.creerClosure()
+    // ✅ L'instance est bien libérée à la fin
+}
+
+test()
+```
+
+✅ Pourquoi ça marche :
+[weak self] crée une référence faible vers self.   
+Cette référence n’augmente pas le compteur ARC.   
+Si self est libéré avant l’exécution de la closure, la référence devient nil.   
+On utilise guard let self = self pour vérifier que self existe encore au moment de l’exécution.
+
+---
+
+### 📌 8.4 Résumé de la différence
+
+| Type de capture            | Effet sur ARC          | Risque de cycle ?                   | Besoin de `guard` ?                   |
+| -------------------------- | ---------------------- | ----------------------------------- | ------------------------------------- |
+| Forte (par défaut)         | Incrémente le compteur | ✅ Oui, potentiel                    | ❌ Non                                 |
+| Faible (`weak`)            | N’incrémente pas       | ❌ Non                               | ✅ Oui (`self` peut être nil)          |
+| Non possédante (`unowned`) | N’incrémente pas       | ⚠️ Non mais crash si `self` est nil | ❌ Non (mais dangereux si mal utilisé) |
