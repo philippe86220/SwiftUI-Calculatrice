@@ -196,6 +196,35 @@ Ici :
 - `[weak self]` est une liste de capture,
 - `guard`, `if`, `return` et `self` sont utilisés dans la logique interne.
 
+Ce qui donne par exemple dans une classe :
+```swift
+class Calculateur {
+    var facteur = 3
+
+    func creerClosure() -> (Int) -> Int {
+        let closure = { [weak self] (a: Int) -> Int in
+            guard let self = self else { return 0 }
+
+            if a > 10 {
+                return a * 2 * self.facteur
+            } else {
+                return a * self.facteur
+            }
+        }
+        return closure
+    }
+}
+
+let calc = Calculateur()
+let closure = calc.creerClosure()
+print(closure(12)) // 72
+print(closure(8))  // 24
+print(closure(2))  // 6
+```
+✅ Cet exemple :
+montre clairement la portée de self,
+illustre l’effet de la closure sur différentes valeurs,
+et démontre l’utilité de guard let self = self.
 ---
 
 ### ✨ 7.2 Mots-clés autour des closures
