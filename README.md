@@ -52,7 +52,7 @@ Je ne revendique pas la paternité exclusive du code : mon objectif est d'en com
 📚 Documentation complémentaire :
 - [Optionnels en Swift](./docs/Optionnels.md)
 - [Protocoles & Extensions en Swift](./docs/Protocoles-Extensions.md)
-
+- [Les Closures en Swift](./docs/Closures.md)
 
 
 
