@@ -60,23 +60,64 @@ print("Produit : \(produit)")     // 4200
 
 ## 4. Simplification de syntaxe
 
-Swift permet de raccourcir la syntaxe des closures :
+Swift permet de raccourcir la syntaxe des closures de manière progressive.  
+Prenons un tableau simple :
 
 ```swift
-// Version complète
-donnees.sorted(by: { (a: Int, b: Int) -> Bool in
+let donnees = [5, 2, 7, 3, 20]
+```
+
+### 📝 Version complète
+
+```swift
+let classement = donnees.sorted(by: { (a: Int, b: Int) -> Bool in
     return a < b
 })
-
-// Version simplifiée
-donnees.sorted(by: { a, b in a < b })
-
-// Encore plus courte avec les noms implicites $0, $1
-donnees.sorted(by: { $0 < $1 })
-
-// Et enfin, comme < est déjà une fonction, on peut écrire :
-donnees.sorted(by: <)
+print(classement) // [2, 3, 5, 7, 20]
 ```
+
+Ici, la closure précise explicitement :
+- les **paramètres** avec leurs types (`a: Int`, `b: Int`),
+- le **type de retour** (`-> Bool`),
+- et utilise `return` pour la comparaison.
+
+---
+
+### ✂️ Version simplifiée (inférence des types)
+
+```swift
+let classement2 = donnees.sorted(by: { a, b in a > b })
+print(classement2) // [20, 7, 5, 3, 2]
+```
+
+➡️ Swift **déduit les types** de `a` et `b` depuis le contexte.  
+Le mot-clé `return` devient optionnel car la closure ne contient qu’une seule expression.
+
+---
+
+### 💡 Version ultra courte (paramètres implicites)
+
+```swift
+let classement3 = donnees.sorted(by: { $0 < $1 })
+print(classement3) // [2, 3, 5, 7, 20]
+```
+
+➡️ Swift fournit automatiquement des **noms implicites** `$0`, `$1`, … pour les paramètres.
+
+---
+
+### ✨ Version finale (utilisation directe de l'opérateur)
+
+```swift
+let classement4 = donnees.sorted(by: >)
+print(classement4) // [20, 7, 5, 3, 2]
+```
+
+➡️ Comme les opérateurs `<` et `>` sont eux-mêmes des fonctions `(Int, Int) -> Bool`, on peut les passer directement en argument.
+
+---
+
+✅ Cette progression est très parlante pour comprendre comment Swift permet d’écrire des closures **de plus en plus concises** sans perdre en lisibilité.
 
 ---
 
@@ -117,6 +158,7 @@ URLSession.shared.dataTask(with: url) { data, response, error in
     print("Requête terminée")
 }.resume()
 ```
+
 ---
 
 ## 7. Autres mots-clés liés aux closures
@@ -202,4 +244,3 @@ Ici :
 | ⚡ Usage | Tri, actions différées, callbacks, SwiftUI, async |
 
 ---
-
