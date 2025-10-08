@@ -222,9 +222,10 @@ print(closure(8))  // 24
 print(closure(2))  // 6
 ```
 ✅ Cet exemple :
-montre clairement la portée de self,
-illustre l’effet de la closure sur différentes valeurs,
-et démontre l’utilité de guard let self = self.
+montre clairement la portée de self,  
+illustre l’effet de la closure sur différentes valeurs,  
+et démontre l’utilité de guard let self = self.  
+
 ---
 
 ### ✨ 7.2 Mots-clés autour des closures
