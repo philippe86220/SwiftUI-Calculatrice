@@ -304,6 +304,8 @@ func test() {
 
 test()
 ```
+---
+
 ### 🔄 8.2 Le problème : cycle de rétention
 Un cycle de rétention se produit quand deux objets se retiennent mutuellement avec des références fortes, les empêchant d’être libérés.
 Les closures sont particulièrement sujettes à ce problème, car :
@@ -336,6 +338,8 @@ func test() {
 test()
 ```
 ➡️ Ici, self est capturé fortement par la closure → la libération ne se produit pas.
+
+---
 
 ### 🧰 8.3 La solution : [weak self]
 Pour rompre le cycle, on capture self de manière faible :
@@ -380,3 +384,56 @@ On utilise guard let self = self pour vérifier que self existe encore au moment
 | Forte (par défaut)         | Incrémente le compteur | ✅ Oui, potentiel                    | ❌ Non                                 |
 | Faible (`weak`)            | N’incrémente pas       | ❌ Non                               | ✅ Oui (`self` peut être nil)          |
 | Non possédante (`unowned`) | N’incrémente pas       | ⚠️ Non mais crash si `self` est nil | ❌ Non (mais dangereux si mal utilisé) |
+
+---
+
+### 📝 8.5 Exemple pratique complet
+```swift
+class Calculateur {
+    var facteur = 3
+
+    func creerClosure() -> (Int) -> Int {
+        let closure = { [weak self] (a: Int) -> Int in
+            guard let self = self else {
+                print("❌ self n'existe plus")
+                return 0
+            }
+
+            if a > 10 {
+                return a * 2 * self.facteur
+            } else {
+                return a * self.facteur
+            }
+        }
+        return closure
+    }
+
+    deinit {
+        print("♻️ Calculateur libéré")
+    }
+}
+
+func exemple() {
+    let calc = Calculateur()
+    let closure = calc.creerClosure()
+    print(closure(12)) // 72
+    print(closure(8))  // 24
+    print(closure(2))  // 6
+}
+
+exemple()
+```
+--- 
+
+### ⚠️ 8.6 Points importants à retenir
+Les closures capturent les variables par référence forte par défaut.
+Si une closure stockée dans self capture self fortement → cycle.
+[weak self] ou [unowned self] sont les outils pour casser ces cycles.
+[weak self] est le choix le plus sûr dans la plupart des cas.
+Toujours réfléchir à la durée de vie de la closure par rapport à self.
+
+✅ Conclusion
+Bien comprendre ARC + closures + weak self est crucial pour :
+éviter les fuites mémoires,
+éviter les comportements inattendus dans les callbacks différés,
+écrire du code Swift robuste et maîtrisé.
