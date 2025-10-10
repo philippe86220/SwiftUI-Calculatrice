@@ -139,11 +139,11 @@ print("Jour suivant : \(aujourdhui.jourSuivant().nomFrancais())") // Jour suivan
 ```
 L’énumération `JourSemaine` est un type Swift complet avec une valeur brute `Int`,   
  conformant au protocole `CaseIterable` pour pouvoir itérer sur tous les cas.
-•    Elle dispose d’une propriété calculée `estJourOuvré` qui    
+-   Elle dispose d’une propriété calculée `estJourOuvré` qui    
     indique si le jour est un jour de semaine ou non.
-•    Elle a une méthode `nomFrancais()` qui   
+-   Elle a une méthode `nomFrancais()` qui   
     retourne le nom du jour sous forme d’une chaîne.
-•    Une méthode `jourSuivant()` renvoie le jour suivant   
+-    Une méthode `jourSuivant()` renvoie le jour suivant   
     dans la semaine en utilisant la liste complète des cas.
 Cet exemple montre que les énumérations Swift ne servent pas uniquement à lister des valeurs, mais peuvent aussi incarner de la logique cohérente propre à leurs cas.
 
@@ -187,10 +187,11 @@ let expr = Expression.multiplication(
 print(expr.pretty())   // ((3 + 5) × 2)
 print(expr.calculer()) // 16
 ```
-Le mot-clé `indirect` permet à l’énumération de contenir des cas récursifs, c’est-à-dire des cas dont les valeurs associées peuvent être une instance de la même énumération.
-•    Ici, `Expression` modélise une expression arithmétique qui peut être un nombre simple, ou une addition ou multiplication de sous-expressions.
-•    La méthode `calculer()` évalue récursivement l’expression pour retourner sa valeur entière.
-•    Cette technique est très utile pour représenter des arbres syntaxiques, des calculs mathématiques, ou tout modèle récursif dans Swift.
+Le mot-clé `indirect` permet à l’énumération de contenir des cas récursifs,   
+c’est-à-dire des cas dont les valeurs associées peuvent être une instance de la même énumération.
+-    Ici, `Expression` modélise une expression arithmétique qui peut être un nombre simple, ou une addition ou multiplication de sous-expressions.
+-    La méthode `calculer()` évalue récursivement l’expression pour retourner sa valeur entière.
+-    Cette technique est très utile pour représenter des arbres syntaxiques, des calculs mathématiques, ou tout modèle récursif dans Swift.
 Ainsi, les enums Swift peuvent aussi servir pour modéliser des structures de données complexes et récursives, en toute sécurité et souplesse.
 
 ---
@@ -219,7 +220,26 @@ func payer(avec méthode: Paiement) {
     }
 }
 ```
+Ce code définit un type énuméré avec valeurs associées pour représenter différents moyens de paiement, puis une fonction qui les traite avec un `switch` en exploitant le pattern matching de Swift.
+Définition de l’énumération :
 
+`enum Paiement` : type énuméré qui peut représenter trois modes de paiement différents.
+-	`case carte(numéro: String, expiration: String, cvv: String)` : cas avec valeurs associées (chaîne pour le numéro, date d’expiration, CVV).
+-	`case paypal(email: String)` : cas PayPal identifié par un email.
+-	`case espèces` : cas sans valeur associée.
+
+Fonction `payer` : 
+
+-	`switch méthode` : permet d’agir différemment selon le cas de `Paiement` reçu.
+-	`case .carte(let numéro, _, _) where numéro.hasPrefix("4")`
+-	Le `where` ajoute une condition de filtrage : ici, on teste si le numéro commence par “4” (numéros VISA).
+-	Les `_` ignorent les valeurs non utilisées (`expiration` et `cvv`).
+-	`case .carte(let numéro, let expiration, _)`
+-	Capture le numéro et la date d’expiration pour les afficher.
+-	Ce cas est atteint si le premier cas `.carte` avec condition VISA n’a pas été pris.
+-	`case .paypal(let email)` : extrait et affiche l’adresse email associée.
+-	`case .espèces` : paiement en espèces.
+  
 ### 🔹 `if case` et `guard case`
 
 ```swift
@@ -228,7 +248,27 @@ let paiement = Paiement.carte(numéro: "4111...", expiration: "12/27", cvv: "123
 if case let .carte(num, _, _) = paiement {
     print("Numéro de carte : \(num)")
 }
+Numéro de carte : 4111...
 ```
+Cet exemple montre comment utiliser le pattern matching avec une énumération qui a des valeurs associées, mais cette fois dans un `if case let` au lieu d’un `switch`.
+
+Explication détaillée :
+
+`paiement` est une valeur du type `Paiement`, ici du cas `.carte`.
+-	`if case let .carte(num, _, _) = paiement` :
+-	Cela teste si `paiement` est bien du type `.carte`.
+-	Si oui, l’instruction extrait le premier paramètre (le numéro) dans une variable `num`.
+-	Les valeurs `expiration` et `cvv` sont ignorées (avec `_`).
+-	Si la condition est vraie, le bloc s’exécute et affiche le numéro de carte.
+Pourquoi ce pattern ?
+-	C’est une manière plus concise d’accéder à une valeur associée d’une enum sans passer par un switch, utile quand on ne s’intéresse qu’à un seul cas.[bugsee +2]
+-	On peut combiner ce style avec d’autres constructions comme `while case`, `for case`, etc.
+Ce que ça affiche
+Si le cas est bien `.carte`, on obtient : 
+Numéro de carte : 4111...
+
+Sinon, rien ne s’affiche.
+C’est très utile pour tester et extraire rapidement des valeurs associées dans une énumération Swift.
 
 ---
 
