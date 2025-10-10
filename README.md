@@ -53,7 +53,7 @@ Je ne revendique pas la paternité exclusive du code : mon objectif est d'en com
 - [Optionnels en Swift](./docs/Optionnels.md)
 - [Protocoles & Extensions en Swift](./docs/Protocoles-Extensions.md)
 - [Les Closures en Swift](./docs/Closures.md)
-- [Structs Vs Classes](./docs/StructsVsClasses.md) 
-
+- [Structs Vs Classes](./docs/StructsVsClasses.md)
+- [Les puissantes énumérations en Swift](./docs/EnumsSwift.md) 
 
 
